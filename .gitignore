@@ -6,6 +6,7 @@ SPEC.docx
 
 # Configuration
 config/db_connection.php
+.~lock.MANUAL.docx#
 
 
 # IDE

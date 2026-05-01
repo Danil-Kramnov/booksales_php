@@ -1,0 +1,20 @@
+# Documentation
+*.docx
+GUIDELINES.docx  
+MANUAL.docx  
+SPEC.docx
+
+# Configuration
+config/db_connection.php
+
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+#images
+img/

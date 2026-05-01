@@ -30,12 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['find_account'])) {
     $sql = "SELECT * FROM Accounts WHERE Email = :email AND Password = :password";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['email' => $email, 'password' => $password]);
-    $account = $stmt->fetch(PDO::FETCH_ASSOC);
+    $account = $stmt->fetch(PDO::FETCH_ASSOC); //reference: https://www.php.net/manual/en/pdostatement.fetch.php
     
     if (!$account) {
         $error = "Invalid email or password.";
     } elseif ($account['AccountStatus'] == 'C') {
-        $error = 'Account is suspended. <a href="update_account.php?reactivate=' . $account['AccountID'] . '" style="color: #3498db; text-decoration: underline;">Click here to reactivate</a>';
+        $error = 'Account is suspended. <a href="update_account.php?reactivate=' . $account['AccountID'] . 
+                    '" style="color: #3498db; text-decoration: underline;">Click here to reactivate</a>';
         $account = null;
     }
 }

@@ -13,6 +13,7 @@ $surname = isset($_POST['surname']) ? $_POST['surname'] : '';
 $email = isset($_POST['email']) ? $_POST['email'] : '';
 $eircode = isset($_POST['eircode']) ? $_POST['eircode'] : '';
 
+// reference: https://www.php.net/manual/en/reserved.variables.server.php
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $forename = trim($_POST['forename']);
     $surname = trim($_POST['surname']);
@@ -38,11 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 'eircode' => $eircode
             ]);
             
-            header("Location: purchase.php?registered=1");
+            header("Location: purchase.php?registered=1"); // reference: https://www.php.net/manual/en/function.header.php
             exit;
             
-        } catch (PDOException $e) {
-            if ($e->getCode() == 23000) {
+        } catch (PDOException $e) { // reference1: https://www.php.net/manual/en/exception.getcode.php
+            if ($e->getCode() == 23000) { // reference2: https://dev.mysql.com/doc/mysql-errors/8.0/en/server-error-reference.html
                 $error = "This email is already registered.";
             } else {
                 $error = "Registration failed.";

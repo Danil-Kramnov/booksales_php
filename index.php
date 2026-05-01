@@ -32,17 +32,24 @@ $stmt = searchBooks($pdo, $search);
     </form>
 
     <div class="book-grid">
-        <?php while ($book = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
-            <div class="book-card">
-                <img src="img/placeholder.png" alt="<?php echo htmlspecialchars($book['BookTitle']); ?>">
-                <h3><?php echo htmlspecialchars($book['BookTitle']); ?></h3>
-                <p><?php echo htmlspecialchars($book['Author']); ?></p>
-                <p style="color: #95a5a6; font-size: 0.9rem;"><?php echo htmlspecialchars($book['Genre']); ?></p>
-                <p class="price">€<?php echo number_format($book['Price'], 2); ?></p>
-                <a href="purchase_book.php?book_id=<?php echo $book['BookID']; ?>" class="btn">Buy</a>
-            </div>
-        <?php endwhile; ?>
-    </div>
+    <?php while ($book = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
+        <div class="book-card">
+            <?php
+            // check if book-specific image exists, otherwise use placeholder
+            $imagePath = "img/book_" . $book['BookID'] . ".png";
+            if (!file_exists($imagePath)) { // reference: https://www.php.net/manual/en/function.file-exists.php
+                $imagePath = "img/placeholder.png";
+            }
+            ?>
+            <img src="<?php echo $imagePath; ?>" alt="<?php echo htmlspecialchars($book['BookTitle']); ?>">
+            <h3><?php echo htmlspecialchars($book['BookTitle']); ?></h3>
+            <p><?php echo htmlspecialchars($book['Author']); ?></p>
+            <p style="color: #95a5a6; font-size: 0.9rem;"><?php echo htmlspecialchars($book['Genre']); ?></p>
+            <p class="price">€<?php echo number_format($book['Price'], 2); ?></p>
+            <a href="purchase_book.php?book_id=<?php echo $book['BookID']; ?>" class="btn">Buy</a>
+        </div>
+    <?php endwhile; ?>
+</div>
     
     <?php if ($stmt->rowCount() == 0): ?>
         <p style="text-align: center; color: #7f8c8d; margin-top: 2rem;">

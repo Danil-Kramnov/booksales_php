@@ -18,7 +18,7 @@ if (isset($_GET['book_id']) && is_numeric($_GET['book_id'])) {
     $sql = "SELECT * FROM Books WHERE BookID = :bookid AND BookStatus = 'A'";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['bookid' => $bookId]);
-
+    // reference: https://www.php.net/manual/en/pdostatement.fetch.php
     $book = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if ($book) {
@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['select_book'])) {
 }
 
 // step 2: login
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['authenticate'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
     $bookId = $_POST['book_id'];
@@ -168,7 +168,7 @@ if (isset($_GET['registered'])) {
                     ?>
                 </select>
             </div>
-            <button type="submit" name="select_book">Next: Login</button>
+            <button type="submit" name="select_book">Login</button>
         </form>
         
     <?php elseif ($step == 2): ?>
@@ -185,7 +185,7 @@ if (isset($_GET['registered'])) {
                 <label>Password</label>
                 <input type="password" name="password" required>
             </div>
-            <button type="submit" name="authenticate">Next: Confirm Purchase</button>
+            <button type="submit" name="login">Confirm Purchase</button>
         </form>
         
         <p style="margin-top: 1rem;">Don't have an account? <a href="register_account.php">Register here</a></p>
@@ -205,18 +205,17 @@ if (isset($_GET['registered'])) {
             
             <div class="form-group">
                 <label>Quantity:</label>
-                <input type="number" name="quantity" min="1" max="<?php echo $book['StockAmount']; ?>" value="1" id="qty" required>
+                <input type="number" 
+                    name="quantity" 
+                    min="1" 
+                    max="<?php echo $book['StockAmount']; ?>" 
+                    value="1" 
+                    id="qty" 
+                    data-price="<?php echo $book['Price']; ?>" 
+                    required>
             </div>
-            
+
             <p><strong>Total: €<span id="total"><?php echo number_format($book['Price'], 2); ?></span></strong></p>
-            
-            <script>
-                const price = <?php echo $book['Price']; ?>;
-                document.getElementById('qty').addEventListener('input', function() {
-                    const total = (price * this.value).toFixed(2);
-                    document.getElementById('total').textContent = total;
-                });
-            </script>
             
             <button type="submit" name="confirm_purchase">Confirm Purchase</button>
         </form>

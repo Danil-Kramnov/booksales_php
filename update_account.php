@@ -177,24 +177,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_account'])) {
         
         <?php
         // get orders for this account
-        $sqlOrders = "SELECT o.OrderID, o.TotalPrice, o.DateOrdered
-                      FROM Orders o 
-                      WHERE o.AccountID = :accountid 
-                      ORDER BY o.DateOrdered DESC";
+        $sqlOrders = "SELECT b.BookTitle, o.TotalPrice, o.DateOrdered, ob.QtyOrdered
+              FROM Orders o 
+              JOIN OrderedBooks ob ON o.OrderID = ob.OrderID
+              JOIN Books b ON ob.BookID = b.BookID
+              WHERE o.AccountID = :accountid 
+              ORDER BY o.DateOrdered DESC";
         $stmtOrders = $pdo->prepare($sqlOrders);
         $stmtOrders->execute(['accountid' => $account['AccountID']]);
         ?>
-        
+
         <?php if ($stmtOrders->rowCount() > 0): ?>
             <table>
                 <tr>
-                    <th>Order ID</th>
+                    <th>Book Title</th>
+                    <th>Quantity</th>
                     <th>Date</th>
                     <th>Total</th>
                 </tr>
                 <?php while ($order = $stmtOrders->fetch(PDO::FETCH_ASSOC)): ?>
                     <tr>
-                        <td><?php echo $order['OrderID']; ?></td>
+                        <td><?php echo htmlspecialchars($order['BookTitle']); ?></td>
+                        <td><?php echo $order['QtyOrdered']; ?></td>
                         <td><?php echo $order['DateOrdered']; ?></td>
                         <td>€<?php echo number_format($order['TotalPrice'], 2); ?></td>
                     </tr>
